@@ -36,7 +36,6 @@ def close_task(docname,closure_remark,ok_for_closure, closure_date):
 			doc1 = frappe.get_doc('Task', doc.parent_task_id)
 			doc1.child_task_status = 'Closed'
 			doc1.save()
-			doc1.reload()
 			doc.save()
 			doc.submit()
 
@@ -44,7 +43,6 @@ def close_task(docname,closure_remark,ok_for_closure, closure_date):
 			doc1 = frappe.get_doc('Task', doc.child_task_id)
 			doc1.parent_task_status = 'Closed'
 			doc1.save()
-			doc1.reload()
 			doc.save()
 			doc.submit()
 

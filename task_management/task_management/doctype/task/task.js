@@ -48,7 +48,6 @@ frappe.ui.form.on('Task', {
 							args: { docname: frm.doc.name ,closure_remark: frm.doc.closure_remark ,ok_for_closure: frm.doc.ok_for_closure, closure_date: frm.doc.closure_date},
 							callback: function(r) {
 								frm.reload_doc();
-								frm.refresh();
 							}
 						})
 					} else {
