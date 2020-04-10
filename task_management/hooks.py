@@ -4,11 +4,11 @@ from . import __version__ as app_version
 
 app_name = "task_management"
 app_title = "Task Management"
-app_publisher = "salesandsupport@openetech.com"
+app_publisher = "hello@openetech.com"
 app_description = "Task Management"
 app_icon = "octicon octicon-file-directory"
 app_color = "grey"
-app_email = "salesandsupport@openetech.com"
+app_email = "hello@openetech.com"
 app_license = "MIT"
 
 # Includes in <head>
@@ -86,11 +86,6 @@ app_license = "MIT"
 # 		"on_trash": "method"
 #	}
 # }
-doc_events = {
-	"Task": {
-		"autoname": "task_management.api.generate_auto_name"
-	}
-}
 
 # Scheduled Tasks
 # ---------------
