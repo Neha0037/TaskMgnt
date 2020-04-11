@@ -14,12 +14,15 @@ def delegate_task(docname,assigned_to):
 		frappe.throw(_("Child Task is already created"))
 	else:
 		doc = frappe.get_doc({'doctype': 'Task'})
-		doc = doc1
+		doc.task_description = doc1.task_description 
+		doc.task_reference = doc1.task_reference
+		doc.year = doc1.year
+		doc.month = doc1.month
 		doc.task_owner = assigned_to
-		# doc.owner = assigned_to
+		doc.creation_date = doc1.creation
 		doc.parent_task_id = docname
 		doc.parent_task_status = 'Open'
-		doc.insert()
+		doc.insert(ignore_mandatory=True)
 		#to update child task in parent task
 		if doc.name:
 			return doc.name

@@ -4,14 +4,17 @@
 frappe.ui.form.on('Task', {
 	onload: function(frm, cdt, cdn) {
 		frm.refresh()
-		if (! frm.doc.task_owner) {
-			frm.set_value('task_owner',frm.doc.owner);
-			frm.set_value('creation_date',frm.doc.creation);
-		}
+		frm.set_value('task_owner',frm.doc.owner);
+
+		if (frm.doc.task_owner == frm.doc.owner) {
+			frm.toggle_enable(['task_description', 'task_reference','year','month','task_owner','creation_date'],((frm.doc.task_owner == frappe.session.user_email) || (frm.doc.task_owner == frappe.session.user)));
+			frm.toggle_display(['assign_back','delegate','closure_remark','ok_for_closure','close'],!((frm.doc.task_owner == frappe.session.user_email) || (frm.doc.task_owner == frappe.session.user)) );
+		} 	
 	},
 	validate: function(frm, cdt, cdn) {
 		var long_desc = [cur_frm.doc.task_description , cur_frm.doc.task_reference, cur_frm.doc.year, cur_frm.doc.month].filter(Boolean).join("-");
 		cur_frm.set_value('long_description',long_desc)
+		frm.set_value('creation_date',frappe.datetime.get_today());
 	},
 	assign_back: function(frm, cdt, cdn) {
 		if (frm.doc.docstatus === 0)
@@ -22,6 +25,7 @@ frappe.ui.form.on('Task', {
 			}
 	},
 	delegate: function(frm, cdt, cdn) {
+		if (!frm.doc.assigned_to) { frappe.throw('Assigned to field id mandatory')}
 		if (frm.doc.docstatus === 0 && ! frm.doc.child_task_id) {
 			frappe.call({
 				method: "task_management.custom_method.delegate_task",
