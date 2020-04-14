@@ -25,6 +25,7 @@ def delegate_task(docname,assigned_to):
 		doc.insert(ignore_mandatory=True)
 		#to update child task in parent task
 		if doc.name:
+			create_user_permission('Task',doc.name,doc.task_owner,doc.assigned_to)
 			return doc.name
 
 @frappe.whitelist()
@@ -33,6 +34,11 @@ def close_task(docname,closure_remark,ok_for_closure, closure_date):
 	doc.closure_remark = closure_remark
 	doc.ok_for_closure = ok_for_closure
 	doc.closure_date = closure_date
+
+	v = frappe.db.get_single_value('Task Management Setting', 'validate_parent_child_task')
+	if v==1:
+		if doc.child_task_id and doc.child_task_status == 'Open':
+			frappe.throw('Child task status has to be Closed')
 
 	if doc.closure_date :
 		if doc.parent_task_id:
@@ -51,3 +57,36 @@ def close_task(docname,closure_remark,ok_for_closure, closure_date):
 
 		doc.save()
 		doc.submit()
+
+@frappe.whitelist()
+def create_user_permission(doctype,docname,task_owner,assigned_to = None):
+	records = frappe.db.get_value('User Permission',{'for_value':docname},['name','user'])
+	print(records)
+	if records:
+		for record in records:
+			frappe.db.delete('User Permission',record)																																																																																																															
+
+	name = frappe.db.get_value('User Permission', {'for_value': docname ,'user': task_owner, 'allow': doctype , 'applicable_for': doctype}, ['name'])
+	print(name)
+	if not name:
+		doc = frappe.get_doc({'doctype':'User Permission'})
+		doc.user = task_owner
+		doc.allow = doctype
+		doc.for_value = docname
+		doc.apply_to_all_doctypes = 0
+		doc.applicable_for = doctype
+		doc.save()
+	if assigned_to != None :
+		name = frappe.db.get_value('User Permission', {'for_value': docname ,'user': assigned_to, 'allow': doctype , 'applicable_for': doctype}, ['name'])
+		print(name)
+		if not name:
+			doc = frappe.get_doc({'doctype':'User Permission'})
+			doc.user = assigned_to
+			doc.allow = doctype
+			doc.for_value = docname
+			doc.apply_to_all_doctypes = 0
+			doc.applicable_for = doctype
+			doc.save()
+				
+
+				

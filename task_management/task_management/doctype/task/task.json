@@ -143,9 +143,8 @@
   {
    "allow_on_submit": 1,
    "fieldname": "parent_task_id",
-   "fieldtype": "Link",
+   "fieldtype": "Data",
    "label": "Parent Task ID",
-   "options": "Task",
    "read_only": 1
   },
   {
@@ -181,9 +180,8 @@
   {
    "allow_on_submit": 1,
    "fieldname": "child_task_id",
-   "fieldtype": "Link",
+   "fieldtype": "Data",
    "label": "Child Task ID",
-   "options": "Task",
    "read_only": 1
   },
   {
@@ -235,10 +233,9 @@
   },
   {
    "fieldname": "amended_from",
-   "fieldtype": "Link",
+   "fieldtype": "Data",
    "label": "Amended From",
    "no_copy": 1,
-   "options": "Task",
    "print_hide": 1,
    "read_only": 1
   },
@@ -249,7 +246,7 @@
   }
  ],
  "is_submittable": 1,
- "modified": "2020-04-10 12:14:36.993455",
+ "modified": "2020-04-13 15:58:46.833142",
  "modified_by": "Administrator",
  "module": "Task Management",
  "name": "Task",
@@ -264,6 +261,19 @@
    "read": 1,
    "report": 1,
    "role": "System Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Task Manager",
    "share": 1,
    "submit": 1,
    "write": 1
