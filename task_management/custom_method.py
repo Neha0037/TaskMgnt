@@ -71,7 +71,7 @@ def create_user_permission(doctype, docname, task_owner, assigned_to = None):
 		doc.for_value = docname
 		doc.apply_to_all_doctypes = 0
 		doc.applicable_for = doctype
-		doc.insert(ignore_permission=True)
+		doc.insert(ignore_permissions=True)
 	if assigned_to:
 		name = frappe.db.get_value('User Permission', {'for_value': docname ,'user': assigned_to, 'allow': doctype , 'applicable_for': doctype}, ['name'])
 		if not name:
@@ -81,4 +81,4 @@ def create_user_permission(doctype, docname, task_owner, assigned_to = None):
 			doc.for_value = docname
 			doc.apply_to_all_doctypes = 0
 			doc.applicable_for = doctype
-			doc.insert(ignore_permission=True)
+			doc.insert(ignore_permissions=True)
