@@ -35,8 +35,7 @@ def close_task(docname, closure_remark, ok_for_closure, closure_date):
 	doc.ok_for_closure = ok_for_closure
 	doc.closure_date = closure_date
 
-	if frappe.db.get_single_value('Task Management Setting', 'validate_parent_child_task') and
-		doc.child_task_id and doc.child_task_status == 'Open':
+	if frappe.db.get_single_value('Task Management Setting', 'validate_parent_child_task') and doc.child_task_id and doc.child_task_status == 'Open':
 			frappe.throw(_('Child task status has to be Closed'))
 
 	if doc.closure_date :
