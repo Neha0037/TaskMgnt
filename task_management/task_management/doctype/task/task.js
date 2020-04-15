@@ -6,10 +6,14 @@ frappe.ui.form.on('Task', {
 		if(!frm.doc.task_owner) {
 			frm.set_value('task_owner',frm.doc.owner);
 		}
-		
-		frm.toggle_enable(['task_description', 'task_reference','year','month','task_owner','assigned_to','target_date'],((frm.doc.task_owner == frappe.session.user_email) || (frm.doc.task_owner == frappe.session.user)));
-		frm.toggle_display(['assign_back','delegate','ok_for_closure','close'], !((frm.doc.task_owner == frappe.session.user_email) || (frm.doc.task_owner == frappe.session.user)));
-		frm.toggle_display(['assign_back','delegate','ok_for_closure','close'], (frappe.session.user_email== frm.doc.assigned_to)||(frappe.session.user==frm.doc.assigned_to));	
+		if (frm.doc.docstatus == 0)
+			{	frm.toggle_enable(['task_description', 'task_reference','year','month','task_owner','assigned_to','target_date'],((frm.doc.task_owner == frappe.session.user_email) || (frm.doc.task_owner == frappe.session.user)));
+				frm.toggle_display(['assign_back','delegate','ok_for_closure','close'], !((frm.doc.task_owner == frappe.session.user_email) || (frm.doc.task_owner == frappe.session.user)));
+				frm.toggle_display(['assign_back','delegate','ok_for_closure','close'], (frappe.session.user_email== frm.doc.assigned_to)||(frappe.session.user==frm.doc.assigned_to));
+			}
+		if (frm.doc.docstatus == 1) {
+		cur_frm.fields.forEach(d => cur_frm.set_df_property(d.df.fieldname, 'read_only', true));
+		}
 	},
 	validate: function(frm, cdt, cdn) {
 		var long_desc = [cur_frm.doc.task_description , cur_frm.doc.task_reference, cur_frm.doc.year, cur_frm.doc.month].filter(Boolean).join("-");
@@ -62,6 +66,8 @@ frappe.ui.form.on('Task', {
 			} else{
 				frappe.throw('Closure Remark is mandatory for closure')
 			}
+		} else {
+			frappe.throw('Document is already closed')
 		}
 	},
 	before_submit: function(frm, cdt, cdn) {
