@@ -29,16 +29,15 @@ def delegate_task(docname,assigned_to):
 			return doc.name
 
 @frappe.whitelist()
-def close_task(docname,closure_remark,ok_for_closure, closure_date):
+def close_task(docname, closure_remark, ok_for_closure, closure_date):
 	doc = frappe.get_doc('Task', docname)
 	doc.closure_remark = closure_remark
 	doc.ok_for_closure = ok_for_closure
 	doc.closure_date = closure_date
 
-	v = frappe.db.get_single_value('Task Management Setting', 'validate_parent_child_task')
-	if v==1:
-		if doc.child_task_id and doc.child_task_status == 'Open':
-			frappe.throw('Child task status has to be Closed')
+	if frappe.db.get_single_value('Task Management Setting', 'validate_parent_child_task') and
+		doc.child_task_id and doc.child_task_status == 'Open':
+			frappe.throw(_('Child task status has to be Closed'))
 
 	if doc.closure_date :
 		if doc.parent_task_id:
@@ -59,15 +58,13 @@ def close_task(docname,closure_remark,ok_for_closure, closure_date):
 		doc.submit()
 
 @frappe.whitelist()
-def create_user_permission(doctype,docname,task_owner,assigned_to = None):
+def create_user_permission(doctype, docname, task_owner, assigned_to = None):
 	records = frappe.db.get_value('User Permission',{'for_value':docname},['name','user'])
-	print(records)
 	if records:
 		for record in records:
-			frappe.db.delete('User Permission',record)																																																																																																															
+			frappe.db.delete('User Permission',record)
 
 	name = frappe.db.get_value('User Permission', {'for_value': docname ,'user': task_owner, 'allow': doctype , 'applicable_for': doctype}, ['name'])
-	print(name)
 	if not name:
 		doc = frappe.get_doc({'doctype':'User Permission'})
 		doc.user = task_owner
@@ -76,9 +73,8 @@ def create_user_permission(doctype,docname,task_owner,assigned_to = None):
 		doc.apply_to_all_doctypes = 0
 		doc.applicable_for = doctype
 		doc.save()
-	if assigned_to != None :
+	if assigned_to:
 		name = frappe.db.get_value('User Permission', {'for_value': docname ,'user': assigned_to, 'allow': doctype , 'applicable_for': doctype}, ['name'])
-		print(name)
 		if not name:
 			doc = frappe.get_doc({'doctype':'User Permission'})
 			doc.user = assigned_to
@@ -87,6 +83,3 @@ def create_user_permission(doctype,docname,task_owner,assigned_to = None):
 			doc.apply_to_all_doctypes = 0
 			doc.applicable_for = doctype
 			doc.save()
-				
-
-				

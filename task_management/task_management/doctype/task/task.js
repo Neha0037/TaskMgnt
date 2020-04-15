@@ -3,12 +3,11 @@
 
 frappe.ui.form.on('Task', {
 	onload: function(frm, cdt, cdn) {
-		frm.refresh()
 		if(!frm.doc.task_owner) {
 			frm.set_value('task_owner',frm.doc.owner);
 		}
 		
-		frm.toggle_enable(['task_description', 'task_reference','year','month','task_owner','creation_date','assigned_to','target_date'],((frm.doc.task_owner == frappe.session.user_email) || (frm.doc.task_owner == frappe.session.user)));
+		frm.toggle_enable(['task_description', 'task_reference','year','month','task_owner','assigned_to','target_date'],((frm.doc.task_owner == frappe.session.user_email) || (frm.doc.task_owner == frappe.session.user)));
 		frm.toggle_display(['assign_back','delegate','ok_for_closure','close'], !((frm.doc.task_owner == frappe.session.user_email) || (frm.doc.task_owner == frappe.session.user)));
 		frm.toggle_display(['assign_back','delegate','ok_for_closure','close'], (frappe.session.user_email== frm.doc.assigned_to)||(frappe.session.user==frm.doc.assigned_to));	
 	},
@@ -41,17 +40,17 @@ frappe.ui.form.on('Task', {
 				}
 			})
 		} else {
-			frappe.msgprint('Child Task is already created')
+			frappe.msgprint('Child Task is already created or document is already submitted')
 		}
 	},
 	close: function(frm, cdt, cdn) {
 		if (frm.doc.docstatus === 0) {
-			if(frm.doc.closure_remark) {
-				if(frm.doc.ok_for_closure) {
+			if (frm.doc.closure_remark) {
+				if (frm.doc.ok_for_closure) {
 					frm.set_value('closure_date',frappe.datetime.get_today())
 					frappe.call({
 						method: "task_management.custom_method.close_task",
-						args: { docname: frm.doc.name ,closure_remark: frm.doc.closure_remark ,ok_for_closure: frm.doc.ok_for_closure, closure_date: frm.doc.closure_date},
+						args: { docname: frm.doc.name, closure_remark: frm.doc.closure_remark, ok_for_closure: frm.doc.ok_for_closure, closure_date: frm.doc.closure_date},
 						callback: function(r) {
 							frm.reload_doc();
 						}
