@@ -22,7 +22,7 @@ def delegate_task(docname,assigned_to):
 		doc.creation_date = doc1.creation
 		doc.parent_task_id = docname
 		doc.parent_task_status = 'Open'
-		doc.insert(ignore_mandatory=True)
+		doc.insert(ignore_mandatory=True, ignore_permissions=True)
 		#to update child task in parent task
 		if doc.name:
 			create_user_permission('Task',doc.name,doc.task_owner,doc.assigned_to)
