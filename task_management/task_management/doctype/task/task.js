@@ -8,8 +8,8 @@ frappe.ui.form.on('Task', {
 		}
 		if (frm.doc.docstatus == 0)
 			{	frm.toggle_enable(['task_description', 'task_reference','year','month','task_owner','assigned_to','target_date'],((frm.doc.task_owner == frappe.session.user_email) || (frm.doc.task_owner == frappe.session.user)));
-				frm.toggle_display(['assign_back','delegate','ok_for_closure','close'], !((frm.doc.task_owner == frappe.session.user_email) || (frm.doc.task_owner == frappe.session.user)));
-				frm.toggle_display(['assign_back','delegate','ok_for_closure','close'], (frappe.session.user_email== frm.doc.assigned_to)||(frappe.session.user==frm.doc.assigned_to));
+				frm.toggle_display(['assign_back','delegate','ok_for_closure','close', 'closure_remark'], !((frm.doc.task_owner == frappe.session.user_email) || (frm.doc.task_owner == frappe.session.user)));
+				frm.toggle_display(['assign_back','delegate','ok_for_closure','close', 'closure_remark'], (frappe.session.user_email== frm.doc.assigned_to)||(frappe.session.user==frm.doc.assigned_to));
 			}
 		if (frm.doc.docstatus == 1) {
 		cur_frm.fields.forEach(d => cur_frm.set_df_property(d.df.fieldname, 'read_only', true));
@@ -23,12 +23,13 @@ frappe.ui.form.on('Task', {
 		}
 	},
 	assign_back: function(frm, cdt, cdn) {
-		if (frm.doc.docstatus === 0)
+		if (frm.doc.docstatus === 0 && !frm.doc.child_task_id)
 			{
 				frm.set_value('assigned_to',frm.doc.owner);
 				cur_frm.save();
 				cur_frm.refresh_field('assigned_to');		
 				cur_frm.refresh();
+				frappe.msgprint("Task is assigned back to Owner")
 			}
 	},
 	delegate: function(frm, cdt, cdn) {

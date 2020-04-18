@@ -7,6 +7,9 @@ import frappe
 from frappe import _
 from frappe.model.document import Document
 from frappe import utils
+from frappe.utils import date_diff
 
 class Task(Document):
-	pass
+	def validate(self):
+		if date_diff(self.target_date, self.creation_date) < 0:
+			frappe.throw(_("Target Date cannot be less than creation date"))
