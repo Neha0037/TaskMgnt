@@ -27,9 +27,20 @@ frappe.ui.form.on('Task', {
 			{
 				frm.set_value('assigned_to',frm.doc.owner);
 				cur_frm.save();
-				cur_frm.refresh_field('assigned_to');		
+				cur_frm.refresh_field('assigned_to');
+				if (frm.doc.docstatus == 0)
+					{	frm.toggle_enable(['task_description', 'task_reference','year','month','task_owner','assigned_to','target_date'],((frm.doc.task_owner == frappe.session.user_email) || (frm.doc.task_owner == frappe.session.user)));
+						frm.toggle_display(['assign_back','delegate','ok_for_closure','close', 'closure_remark'], !((frm.doc.task_owner == frappe.session.user_email) || (frm.doc.task_owner == frappe.session.user)));
+						frm.toggle_display(['assign_back','delegate','ok_for_closure','close', 'closure_remark'], (frappe.session.user_email== frm.doc.assigned_to)||(frappe.session.user==frm.doc.assigned_to));
+					}
+				if (frm.doc.docstatus == 1) {
+				cur_frm.fields.forEach(d => cur_frm.set_df_property(d.df.fieldname, 'read_only', true));
+				}
 				cur_frm.refresh();
 				frappe.msgprint("Task is assigned back to Owner")
+			} else
+			{
+				frappe.msgprint("Task cannot be assigned back as child task already exists")
 			}
 	},
 	delegate: function(frm, cdt, cdn) {
@@ -42,6 +53,7 @@ frappe.ui.form.on('Task', {
 					frm.set_value('child_task_status', "Open");
 					cur_frm.save();
 					cur_frm.refresh();
+					frappe.msgprint('New child task is created')
 				}
 			})
 		} else {
